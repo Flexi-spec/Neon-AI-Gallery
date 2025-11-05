@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Social Share Preview -->
+<meta property="og:title" content="🌌 Neon AI Gallery" />
+<meta property="og:description" content="Explore glowing recipes from around the world — powered by AI magic ✨" />
+<meta property="og:image" content="https://flexi-spec.github.io/Neon-AI-Gallery/preview.jpg" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Neon AI Gallery" />
+<meta property="og:url" content="https://flexi-spec.github.io/Neon-AI-Gallery/" />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="🌌 Neon AI Gallery" />
+<meta name="twitter:description" content="Explore glowing recipes from around the world — powered by AI magic ✨" />
+<meta name="twitter:image" content="https://flexi-spec.github.io/Neon-AI-Gallery/preview.jpg" />
+
+<!-- Theme color for browser + WhatsApp mobile -->
+<meta name="theme-color" content="#ff00ff">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon AI</title>
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: radial-gradient(circle at top, #150015, #0b0b0b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+}
+
+.logo {
+  text-align: center;
+}
+
+.typewriter {
+  font-size: 2.7rem;
+  font-weight: bold;
+  color: #ff33ff;
+  text-shadow: 0 0 15px #ff00ff, 0 0 35px #c100ff;
+  letter-spacing: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 3px solid #ff00ff;
+  animation: typing 2s steps(10) 0.5s forwards, blink 0.8s infinite;
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 12ch; } /* length of "🌌 Neon AI" */
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+.subtext {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: #ccc;
+  opacity: 0;
+  animation: fadeIn 1.5s 2.5s forwards;
+}
+
+.loader {
+  margin: 1.8rem auto 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  opacity: 0;
+  animation: fadeIn 1s 3s forwards;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background: #ff00ff;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.dot:nth-child(2) { animation-delay: 0.3s; }
+.dot:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes pulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Fade-out effect */
+.fade-out {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="logo" id="splash">
+  <div class="typewriter">🌌 Neon AI</div>
+  <p class="subtext">Initializing experience...</p>
+  <div class="loader">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
+<script>
+setTimeout(() => {
+  document.getElementById('splash').classList.add('fade-out');
+  setTimeout(() => {
+    window.location.href = "home.html"; // your main page
+  }, 1000);
+}, 5000); // waits ~5 seconds total
+</script>
+
+</body>
+</html>

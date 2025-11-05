@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon AI Gallery</title>
+<style>
+body {
+  margin:0; font-family:'Segoe UI',sans-serif;
+  background: linear-gradient(180deg,#0b0b0b,#1a001a);
+  color:#fff;
+}
+header {
+  text-align:center; padding:2rem 1rem;
+  font-size:2rem; font-weight:bold;
+  color:#ff66ff; text-shadow:0 0 15px #ff00ff,0 0 30px #c100ff;
+}
+#search-bar {
+  text-align:center; margin:1rem 0;
+}
+#search {
+  padding:0.6rem 1rem; border:none; border-radius:25px;
+  background:#220022; color:#fff; font-size:1rem;
+  width:250px; max-width:80%;
+  box-shadow:0 0 10px #c100ff; transition:0.3s;
+}
+#search:focus { outline:none; box-shadow:0 0 20px #ff66ff,0 0 30px #c100ff; }
+
+#suggested {
+  text-align:center; margin:1rem auto; padding:1rem;
+  border:2px solid #ff00ff; border-radius:20px;
+  box-shadow:0 0 25px #ff00ff,0 0 40px #c100ff;
+  max-width:350px;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  from { box-shadow:0 0 25px #ff00ff,0 0 40px #c100ff; }
+  to { box-shadow:0 0 35px #ff66ff,0 0 50px #ff00ff; }
+}
+#suggested img { width:180px; border-radius:15px; margin-top:0.5rem; }
+
+#gallery {
+  display:grid; 
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap:1rem; padding:1rem;
+}
+
+.card {
+  background:#220022; border-radius:15px; padding:0.5rem;
+  box-shadow:0 0 15px #ff00ff,0 0 25px #c100ff;
+  text-align:center; font-size:0.8rem; transition: transform 0.3s, box-shadow 0.3s;
+  cursor:pointer;
+}
+.card img {
+  width:100%; border-radius:10px; margin-bottom:0.3rem;
+  box-shadow:0 0 8px #ff00ff inset;
+}
+.card:hover { transform:scale(1.05); box-shadow:0 0 25px #ff00ff,0 0 35px #c100ff; }
+
+.love {
+  font-size:1.1rem; color:gray; cursor:pointer; transition:0.3s;
+}
+.love.loved { color:#ff66ff; text-shadow:0 0 10px #ff66ff,0 0 20px #c100ff; }
+
+.loading-dots {
+  display:flex; justify-content:center; gap:0.5rem; margin:1rem 0;
+}
+.dot { width:10px; height:10px; background:#ff66ff; border-radius:50%; animation:blink 1s infinite; }
+.dot:nth-child(2){ animation-delay:0.2s; }
+.dot:nth-child(3){ animation-delay:0.4s; }
+@keyframes blink {0%,80%,100%{opacity:0;}40%{opacity:1;}}
+
+/* Floating favorites button */
+#fav-btn {
+  position:fixed; bottom:25px; right:25px;
+  background:#ff00ff; color:#fff;
+  border:none; border-radius:50%;
+  width:60px; height:60px;
+  font-size:1.6rem; cursor:pointer;
+  box-shadow:0 0 20px #ff00ff,0 0 30px #c100ff;
+  transition:0.3s;
+  z-index:15;
+}
+#fav-btn:hover { transform:scale(1.1); }
+
+/* Modals */
+#fav-modal, #preview-modal {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.9);
+  display:none; justify-content:center; align-items:center;
+  z-index:20;
+}
+.modal-content {
+  background:#1a001a; border-radius:20px; padding:1rem;
+  box-shadow:0 0 25px #ff00ff,0 0 40px #c100ff;
+  width:90%; max-width:400px; max-height:85%;
+  overflow-y:auto; text-align:center;
+}
+.fav-item {
+  display:flex; align-items:center; gap:10px;
+  background:#220022; border-radius:10px; padding:0.5rem;
+  margin:0.5rem 0; box-shadow:0 0 10px #ff00ff;
+  cursor:pointer;
+}
+.fav-item img { width:60px; border-radius:10px; }
+.nav-btn {
+  background:#ff00ff; border:none; border-radius:10px;
+  color:white; font-weight:bold; padding:0.4rem 1rem; margin:0.5rem;
+  cursor:pointer; box-shadow:0 0 15px #ff00ff;
+}
+#preview-content button {
+  margin-top:1rem; background:#ff00ff; border:none;
+  color:#fff; padding:0.6rem 1rem; border-radius:10px;
+  font-weight:bold; cursor:pointer; box-shadow:0 0 15px #ff00ff;
+}
+</style>
+</head>
+<body>
+
+<header>🌌 Neon AI Gallery</header>
+
+<div id="search-bar">
+  <input type="text" id="search" placeholder="Search recipes... 🔍">
+</div>
+
+<div id="suggested">
+  <h2>🍽️ Suggested Meal</h2>
+  <div class="loading-dots">
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  </div>
+</div>
+
+<div id="gallery"></div>
+<div id="loading" class="loading-dots">
+  <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+</div>
+
+<button id="fav-btn">❤️</button>
+
+<div id="fav-modal">
+  <div class="modal-content" id="fav-list">
+    <h2>⭐ Favorites</h2>
+    <button id="back-home" class="nav-btn">⬅ Back to Home</button>
+  </div>
+</div>
+
+<div id="preview-modal">
+  <div class="modal-content" id="preview-content">
+    <img id="preview-img" src="" style="width:200px; border-radius:15px; box-shadow:0 0 20px #ff00ff;">
+    <h2 id="preview-name" style="color:#ff66ff; margin:1rem 0 0.5rem;"></h2>
+    <p id="preview-cat" style="font-size:0.9rem; color:#ccc;"></p>
+    <p id="preview-desc" style="font-size:0.9rem; color:#ddd;"></p>
+    <button id="view-full">View Full Recipe 🔗</button><br>
+    <button id="close-preview" class="nav-btn">Close ✖</button>
+  </div>
+</div>
+
+<script>
+async function fetchMeal() {
+  try {
+    const res = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
+    const data = await res.json();
+    const m = data.meals[0];
+    return {
+      id: m.idMeal,
+      name: m.strMeal,
+      image: m.strMealThumb,
+      category: m.strCategory,
+      instructions: m.strInstructions,
+      link: m.strSource || m.strYoutube || `https://www.themealdb.com/meal.php?c=${m.idMeal}`
+    };
+  } catch(e) { console.error(e); return null; }
+}
+
+function toggleFavorite(recipe) {
+  let fav = JSON.parse(localStorage.getItem('favorites') || '[]');
+  if(fav.find(r=>r.id===recipe.id)) fav = fav.filter(r=>r.id!==recipe.id);
+  else fav.push(recipe);
+  localStorage.setItem('favorites', JSON.stringify(fav));
+}
+function isFavorite(id){ return JSON.parse(localStorage.getItem('favorites')||'[]').find(r=>r.id===id); }
+
+async function loadSuggested(){
+  const suggDiv=document.getElementById('suggested');
+  suggDiv.innerHTML=`<h2>🍽️ Suggested Meal</h2><div class="loading-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
+  const recipe=await fetchMeal();
+  if(recipe){
+    suggDiv.innerHTML=`
+      <h2>🍽️ Suggested Meal</h2>
+      <img src="${recipe.image}" alt="${recipe.name}" style="cursor:pointer;">
+      <h3>${recipe.name}</h3>
+      <p>${recipe.category}</p>
+      <p style="font-size:0.8rem;">${recipe.instructions.substring(0,150)}...</p>
+      <p>Click image for details!</p>`;
+    suggDiv.querySelector('img').addEventListener('click', ()=>openPreview(recipe));
+  } else suggDiv.innerHTML='<p>Error loading suggested meal. Refresh to try again.</p>';
+}
+
+const gallery=document.getElementById('gallery');
+let loading=false;
+
+async function loadRecipesBatch(count=10){
+  if(loading)return;
+  loading=true;
+  for(let i=0;i<count;i++){
+    const recipe=await fetchMeal();
+    if(!recipe)continue;
+    const card=document.createElement('div');
+    card.className='card';
+    const loved=isFavorite(recipe.id)?'loved':'';
+    card.innerHTML=`
+      <span class="love ${loved}">❤️</span>
+      <img src="${recipe.image}" alt="${recipe.name}">
+      <h4>${recipe.name}</h4><p>${recipe.category}</p>`;
+    card.querySelector('.love').addEventListener('click', e=>{
+      e.stopPropagation();
+      toggleFavorite(recipe);
+      e.target.classList.toggle('loved');
+    });
+    card.addEventListener('click',()=>openPreview(recipe));
+    gallery.appendChild(card);
+  }
+  loading=false;
+}
+
+window.addEventListener('scroll',async()=>{
+  if(window.innerHeight+window.scrollY>=document.body.offsetHeight-200){
+    await loadRecipesBatch(8);
+  }
+});
+
+document.getElementById('search').addEventListener('input',function(){
+  const query=this.value.toLowerCase();
+  document.querySelectorAll('#gallery .card').forEach(card=>{
+    const name=card.querySelector('h4').textContent.toLowerCase();
+    card.style.display=name.includes(query)||query===''?'':'none';
+  });
+});
+
+// Favorites Modal
+const favBtn=document.getElementById('fav-btn');
+const favModal=document.getElementById('fav-modal');
+const favList=document.getElementById('fav-list');
+const backHome=document.getElementById('back-home');
+
+favBtn.addEventListener('click',()=>{
+  const favs=JSON.parse(localStorage.getItem('favorites')||'[]');
+  favList.innerHTML='<h2>⭐ Favorites</h2>';
+  favList.appendChild(backHome);
+  if(favs.length===0){favList.innerHTML+='<p>No favorites yet 💔</p>';return favModal.style.display='flex';}
+  favs.forEach(f=>{
+    const div=document.createElement('div');
+    div.className='fav-item';
+    div.innerHTML=`<img src="${f.image}"><div><h4>${f.name}</h4><p>${f.category}</p></div>`;
+    div.addEventListener('click',()=>openPreview(f));
+    favList.appendChild(div);
+  });
+  favModal.style.display='flex';
+});
+
+backHome.addEventListener('click',()=>{
+  favModal.style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+favModal.addEventListener('click',e=>{if(e.target===favModal)favModal.style.display='none';});
+
+// Preview Modal
+const previewModal=document.getElementById('preview-modal');
+const img=document.getElementById('preview-img');
+const nameEl=document.getElementById('preview-name');
+const cat=document.getElementById('preview-cat');
+const desc=document.getElementById('preview-desc');
+const fullBtn=document.getElementById('view-full');
+const closePreview=document.getElementById('close-preview');
+
+function openPreview(recipe){
+  img.src=recipe.image;
+  nameEl.textContent=recipe.name;
+  cat.textContent=recipe.category;
+  desc.textContent=recipe.instructions.substring(0,200)+'...';
+  fullBtn.onclick=()=>window.open(recipe.link,'_blank');
+  previewModal.style.display='flex';
+}
+closePreview.onclick=()=>previewModal.style.display='none';
+previewModal.addEventListener('click',e=>{if(e.target===previewModal)previewModal.style.display='none';});
+
+(async function init(){
+  await loadSuggested();
+  await loadRecipesBatch(20);
+})();
+</script>
+
+</body>
+</html>
