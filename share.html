@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Neon AI Recipe Share</title>
+
+<!-- Default OG tags (will update dynamically) -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Neon AI Gallery Recipe">
+<meta property="og:description" content="Discover amazing recipes powered by Neon AI Gallery 🍽️">
+<meta property="og:image" content="https://flexi-spec.github.io/Neon-AI-Gallery/preveiw.jpg">
+<meta property="og:url" content="https://flexi-spec.github.io/Neon-AI-Gallery/">
+<meta name="theme-color" content="#ff00ff">
+
+<script>
+(async()=>{
+  const params=new URLSearchParams(window.location.search);
+  const id=params.get('id');
+  if(!id)return;
+  
+  const res=await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+  const data=await res.json();
+  const m=data.meals[0];
+
+  // Dynamically update OG tags
+  document.querySelector('meta[property="og:title"]').setAttribute('content', m.strMeal);
+  document.querySelector('meta[property="og:description"]').setAttribute('content', m.strCategory + ' — Tap to view recipe');
+  document.querySelector('meta[property="og:image"]').setAttribute('content', m.strMealThumb);
+  document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
+  document.title = `${m.strMeal} | Neon AI Gallery`;
+
+  // Delay 1 second so WhatsApp can cache preview before redirect
+  setTimeout(()=>window.location.href=`index.html?recipe=${id}`, 1000);
+})();
+</script>
+</head>
+<body style="background:#0b0b0b;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
+<h2>Redirecting to Neon AI Gallery...</h2>
+</body>
+</html>
