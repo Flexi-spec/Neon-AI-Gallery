@@ -151,7 +151,8 @@ header {
     <p id="preview-cat" style="font-size:0.9rem; color:#ccc;"></p>
     <p id="preview-desc" style="font-size:0.9rem; color:#ddd;"></p>
     <button id="view-full">View Full Recipe 🔗</button><br>
-    <button id="close-preview" class="nav-btn">Close ✖</button>
+    <button id="close-preview" class="nav-btn">Close ✖</button>    
+<button id="share-recipe">Share 📤</button>
   </div>
 </div>
 
@@ -273,7 +274,9 @@ const cat=document.getElementById('preview-cat');
 const desc=document.getElementById('preview-desc');
 const fullBtn=document.getElementById('view-full');
 const closePreview=document.getElementById('close-preview');
-
+function generateShareLink(recipe) {
+  return `https://flexi-spec.github.io/Neon-AI-Gallery/share.html?id=${encodeURIComponent(recipe.id)}`;
+  }
 function openPreview(recipe){
   img.src=recipe.image;
   nameEl.textContent=recipe.name;
