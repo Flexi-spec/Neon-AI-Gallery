@@ -2,39 +2,89 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Neon AI Recipe Share</title>
-
-<!-- Default OG tags (will update dynamically) -->
-<meta property="og:type" content="article">
-<meta property="og:title" content="Neon AI Gallery Recipe">
-<meta property="og:description" content="Discover amazing recipes powered by Neon AI Gallery 🍽️">
-<meta property="og:image" content="https://flexi-spec.github.io/Neon-AI-Gallery/preveiw.jpg">
-<meta property="og:url" content="https://flexi-spec.github.io/Neon-AI-Gallery/">
-<meta name="theme-color" content="#ff00ff">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon AI Gallery</title>
+<style>
+body {
+  background: #0b0b0b;
+  color: #fff;
+  font-family: Poppins, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+h1 { margin-bottom: 20px; }
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  width: 90%;
+}
+.card {
+  background: #1a1a1a;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 15px #ff00ff;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px #ff00ff;
+}
+.card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+.card-content {
+  padding: 15px;
+}
+.title {
+  font-weight: bold;
+  color: #ff00ff;
+  margin-bottom: 8px;
+}
+.category {
+  font-size: 0.9rem;
+  color: #fff;
+}
+</style>
+</head>
+<body>
+<h1>Neon AI Recipe Gallery</h1>
+<div id="gallery"></div>
 
 <script>
-(async()=>{
-  const params=new URLSearchParams(window.location.search);
-  const id=params.get('id');
-  if(!id)return;
-  
-  const res=await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-  const data=await res.json();
-  const m=data.meals[0];
+(async () => {
+  const gallery = document.getElementById('gallery');
+  const res = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
+  const data = await res.json();
+  const meals = data.meals.slice(0, 10); // first 10 recipes
 
-  // Dynamically update OG tags
-  document.querySelector('meta[property="og:title"]').setAttribute('content', m.strMeal);
-  document.querySelector('meta[property="og:description"]').setAttribute('content', m.strCategory + ' — Tap to view recipe');
-  document.querySelector('meta[property="og:image"]').setAttribute('content', m.strMealThumb);
-  document.querySelector('meta[property="og:url"]').setAttribute('content', window.location.href);
-  document.title = `${m.strMeal} | Neon AI Gallery`;
+  meals.forEach(meal => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+      <div class="card-content">
+        <div class="title">${meal.strMeal}</div>
+        <div class="category">${meal.strCategory}</div>
+      </div>
+    `;
 
-  // Delay 1 second so WhatsApp can cache preview before redirect
-  setTimeout(()=>window.location.href=`index.html?recipe=${id}`, 1000);
+    // Click copies shareable link to clipboard
+    card.onclick = () => {
+      const shareLink = `${window.location.origin}/share.html?id=${meal.idMeal}`;
+      navigator.clipboard.writeText(shareLink).then(() => {
+        alert("Shareable link copied!");
+      });
+    };
+
+    gallery.appendChild(card);
+  });
 })();
 </script>
-</head>
-<body style="background:#0b0b0b;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;">
-<h2>Redirecting to Neon AI Gallery...</h2>
 </body>
 </html>
