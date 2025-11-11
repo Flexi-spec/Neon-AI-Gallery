@@ -113,6 +113,21 @@ header {
   color:#fff; padding:0.6rem 1rem; border-radius:10px;
   font-weight:bold; cursor:pointer; box-shadow:0 0 15px #ff00ff;
 }
+
+/* Social share buttons */
+#social-share {
+  display:flex; justify-content:center; gap:0.5rem; margin-top:0.5rem;
+}
+#social-share button {
+  flex:1;
+  background:#ff00ff;
+  border:none; border-radius:10px;
+  color:#fff; font-weight:bold; padding:0.5rem;
+  cursor:pointer; box-shadow:0 0 15px #ff00ff,0 0 25px #c100ff;
+  transition:0.3s;
+}
+#social-share button:hover { transform:scale(1.05); box-shadow:0 0 25px #ff66ff,0 0 35px #ff00ff; }
+
 </style>
 </head>
 <body>
@@ -152,7 +167,14 @@ header {
     <p id="preview-desc" style="font-size:0.9rem; color:#ddd;"></p>
     <button id="view-full">View Full Recipe 🔗</button><br>
     <button id="close-preview" class="nav-btn">Close ✖</button>    
-<button id="share-recipe">Share 📤</button>
+    <button id="share-recipe">Share 📤</button>
+
+    <!-- Social share buttons -->
+    <div id="social-share">
+      <button id="share-whatsapp">WhatsApp 📱</button>
+      <button id="share-twitter">Twitter 🐦</button>
+      <button id="share-facebook">Facebook 📘</button>
+    </div>
   </div>
 </div>
 
@@ -274,9 +296,11 @@ const cat=document.getElementById('preview-cat');
 const desc=document.getElementById('preview-desc');
 const fullBtn=document.getElementById('view-full');
 const closePreview=document.getElementById('close-preview');
+
 function generateShareLink(recipe) {
   return `https://flexi-spec.github.io/Neon-AI-Gallery/share.html?id=${encodeURIComponent(recipe.id)}`;
-  }
+}
+
 function openPreview(recipe){
   img.src=recipe.image;
   nameEl.textContent=recipe.name;
@@ -285,8 +309,40 @@ function openPreview(recipe){
   fullBtn.onclick=()=>window.open(recipe.link,'_blank');
   previewModal.style.display='flex';
 }
+
 closePreview.onclick=()=>previewModal.style.display='none';
 previewModal.addEventListener('click',e=>{if(e.target===previewModal)previewModal.style.display='none';});
+
+// Social Share Buttons
+const shareBtn = document.getElementById('share-recipe');
+const socialShare = document.getElementById('social-share');
+const whatsappBtn = document.getElementById('share-whatsapp');
+const twitterBtn = document.getElementById('share-twitter');
+const facebookBtn = document.getElementById('share-facebook');
+
+shareBtn.addEventListener('click', () => {
+  socialShare.style.display = socialShare.style.display === 'none' ? 'flex' : 'none';
+});
+
+function getCurrentRecipeLink() {
+  const recipeId = img.src.split('/').pop();
+  return generateShareLink({ id: recipeId });
+}
+
+whatsappBtn.addEventListener('click', () => {
+  const url = `https://api.whatsapp.com/send?text=Check this recipe: ${encodeURIComponent(nameEl.textContent)} - ${getCurrentRecipeLink()}`;
+  window.open(url, '_blank');
+});
+
+twitterBtn.addEventListener('click', () => {
+  const url = `https://twitter.com/intent/tweet?text=Check this recipe: ${encodeURIComponent(nameEl.textContent)}&url=${encodeURIComponent(getCurrentRecipeLink())}`;
+  window.open(url, '_blank');
+});
+
+facebookBtn.addEventListener('click', () => {
+  const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(getCurrentRecipeLink())}`;
+  window.open(url, '_blank');
+});
 
 (async function init(){
   await loadSuggested();
