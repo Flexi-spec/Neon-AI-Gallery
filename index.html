@@ -1,26 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Social Share Preview -->
-<meta property="og:title" content="🌌 Neon AI Gallery" />
-<meta property="og:description" content="Explore glowing recipes from around the world — powered by AI magic ✨" />
-<meta property="og:image" content="https://flexi-spec.github.io/Neon-AI-Gallery/preview.jpg" />
+<meta property="og:title" content="🌌 Culinexis AI Gallery" />
+<meta property="og:description" content="Explore glowing recipes from around the world — powered by Culinexis AI ✨" />
+<meta property="og:image" content="https://culinexis.vercel.app/preview.jpg" />
 <meta property="og:type" content="website" />
-<meta property="og:site_name" content="Neon AI Gallery" />
-<meta property="og:url" content="https://flexi-spec.github.io/Neon-AI-Gallery/" />
+<meta property="og:site_name" content="Culinexis AI" />
+<meta property="og:url" content="https://culinexis.vercel.app/" />
 
-<!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="🌌 Neon AI Gallery" />
-<meta name="twitter:description" content="Explore glowing recipes from around the world — powered by AI magic ✨" />
-<meta name="twitter:image" content="https://flexi-spec.github.io/Neon-AI-Gallery/preview.jpg" />
+<meta name="twitter:title" content="🌌 Culinexis AI Gallery" />
+<meta name="twitter:description" content="Explore glowing recipes from around the world — powered by Culinexis AI ✨" />
+<meta name="twitter:image" content="https://culinexis.vercel.app/preview.jpg" />
 
-<!-- Theme color for browser + WhatsApp mobile -->
 <meta name="theme-color" content="#ff00ff">
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neon AI</title>
+<title>Culinexis AI</title>
 <style>
 body {
   margin: 0;
@@ -47,12 +44,13 @@ body {
   overflow: hidden;
   white-space: nowrap;
   border-right: 3px solid #ff00ff;
-  animation: typing 2s steps(10) 0.5s forwards, blink 0.8s infinite;
+  /* Updated width for "🌌 Culinexis AI" (approx 16 characters) */
+  animation: typing 2.5s steps(15) 0.5s forwards, blink 0.8s infinite;
 }
 
 @keyframes typing {
   from { width: 0; }
-  to { width: 12ch; } /* length of "🌌 Neon AI" */
+  to { width: 16ch; } 
 }
 
 @keyframes blink {
@@ -73,7 +71,7 @@ body {
   justify-content: center;
   gap: 10px;
   opacity: 0;
-  animation: fadeIn 1s 3s forwards;
+  animation: fadeIn 1s 3.5s forwards;
 }
 
 .dot {
@@ -97,7 +95,6 @@ body {
   to { opacity: 1; }
 }
 
-/* Fade-out effect */
 .fade-out {
   opacity: 0;
   transition: opacity 1s ease;
@@ -107,8 +104,8 @@ body {
 <body>
 
 <div class="logo" id="splash">
-  <div class="typewriter">🌌 Neon AI</div>
-  <p class="subtext">Initializing experience...</p>
+  <div class="typewriter">🌌 Culinexis AI</div>
+  <p class="subtext">Initializing Pro Experience...</p>
   <div class="loader">
     <div class="dot"></div>
     <div class="dot"></div>
@@ -117,12 +114,14 @@ body {
 </div>
 
 <script>
+// Wait 5 seconds, fade out, then redirect to the Vercel home
 setTimeout(() => {
   document.getElementById('splash').classList.add('fade-out');
   setTimeout(() => {
-    window.location.href = "home.html"; // your main page
+    // UPDATED REDIRECT
+    window.location.href = "https://culinexis.vercel.app/home.html"; 
   }, 1000);
-}, 5000); // waits ~5 seconds total
+}, 5000);
 </script>
 
 </body>
